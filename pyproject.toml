@@ -1,0 +1,62 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ai-governance-pipeline"
+version = "1.0.0"
+description = "An AI Governance Pipeline Framework with Trustworthy AI Practice for High-Risk AI Systems"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "Apache-2.0" }
+authors = [
+    { name = "Muhammad Hassan", email = "muhammad.hassan@aru.ac.uk" },
+    { name = "Shareeful Islam", email = "shareeful.islam@aru.ac.uk" },
+]
+keywords = [
+    "ai governance",
+    "runtime verification",
+    "trustworthy ai",
+    "model integrity",
+    "behavioural attestation",
+    "chain-of-thought faithfulness",
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "numpy>=1.24",
+    "scipy>=1.11",
+    "pandas>=2.0",
+    "pyyaml>=6.0",
+    "torch>=2.1",
+    "torchvision>=0.16",
+    "transformers>=4.38",
+    "scikit-learn>=1.3",
+    "xgboost>=2.0",
+    "shap>=0.44",
+    "captum>=0.7",
+    "pillow>=10.0",
+    "matplotlib>=3.8",
+    "cryptography>=42.0",
+    "tqdm>=4.66",
+]
+
+[project.optional-dependencies]
+detection = ["ultralytics>=8.1"]
+dev = ["pytest>=8.0", "ruff>=0.3"]
+
+[project.scripts]
+agp = "agp.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/mhassan720/ai-governance-pipeline"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
