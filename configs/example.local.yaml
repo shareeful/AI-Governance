@@ -1,0 +1,90 @@
+paths:
+  artifact_root: /absolute/path/to/your/artifacts
+
+runtime:
+  device: auto
+  num_workers: 8
+
+trust:
+  ledger:
+    private_key: /absolute/path/to/your/artifacts/keys/ledger_ed25519.pem
+    public_key: /absolute/path/to/your/artifacts/keys/ledger_ed25519.pub.pem
+
+oversight:
+  reviewer_identifier: your-reviewer-id
+
+checkers:
+  injection:
+    model: /absolute/path/to/your/injection-classifier
+    attack_label: injection
+  deidentification:
+    model: /absolute/path/to/your/deidentification-labeller
+  entailment:
+    model: /absolute/path/to/your/nli-model
+    entailment_label: entailment
+  safety:
+    model: /absolute/path/to/your/safety-classifier
+    unsafe_label: unsafe
+
+benchmarks:
+  non_discrimination:
+    path: /absolute/path/to/bbq.jsonl
+  data_minimisation:
+    root: /absolute/path/to/i2b2-uthealth
+    permitted_categories: []
+  reasoning_faithfulness:
+    early_answering:
+      path: /absolute/path/to/early_answering.jsonl
+    added_mistake:
+      path: /absolute/path/to/added_mistake.jsonl
+    biased_context:
+      path: /absolute/path/to/biased_context.jsonl
+  factual_groundedness:
+    fever:
+      path: /absolute/path/to/fever.jsonl
+    halueval:
+      path: /absolute/path/to/halueval.jsonl
+  injection:
+    advbench:
+      path: /absolute/path/to/advbench.csv
+    jailbreakbench:
+      path: /absolute/path/to/jailbreakbench.jsonl
+  safety:
+    path: /absolute/path/to/safety_corpus.jsonl
+
+baselines:
+  integrity:
+    mntd:
+      shadow_model_root: /absolute/path/to/your/artifacts/shadow_models
+
+attacks:
+  a1:
+    target_class: NORMAL
+    stamped_image_root: /absolute/path/to/your/artifacts/attacks/a1
+  a2:
+    artifact_root: /absolute/path/to/your/artifacts/attacks/a2
+  a3:
+    artifact_root: /absolute/path/to/your/artifacts/attacks/a3
+    shifted_corpus:
+      retinal_oct: /absolute/path/to/shifted/oct/corpus
+  a4:
+    target_class: NORMAL
+    artifact_root: /absolute/path/to/your/artifacts/attacks/a4
+
+experiments:
+  systems:
+    - retinal_oct
+
+systems:
+  retinal_oct:
+    protected_attribute_domains:
+      sex: [F, M]
+      age_band: ["<50", "50-64", "65-79", "80+"]
+    minimum_necessary_personal_data: []
+    dataset:
+      root: /absolute/path/to/kermany-oct
+      metadata:
+        path: /absolute/path/to/kermany-oct/patient_metadata.csv
+        key_column: patient_id
+    preconditions:
+      quality_threshold: 0.0005

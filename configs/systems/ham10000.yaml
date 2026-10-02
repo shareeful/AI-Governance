@@ -1,0 +1,83 @@
+systems:
+  ham10000:
+    kind: image_classification
+    modality: imaging
+    regulatory_basis: "EU AI Act Annex I (medical device)"
+    reason_count: 6
+    protected_attributes: [sex, age_band]
+    protected_attribute_domains:
+      sex: []
+      age_band: []
+    minimum_necessary_personal_data: []
+    dataset:
+      root: null
+      layout: manifest
+      identifier_from: stem
+      enforce_group_disjoint_splits: false
+      manifest:
+        path: null
+        splits: [train, calibration, test, drift]
+        split_column: split
+        path_column: image_path
+        label_column: dx
+        identifier_column: lesion_id
+      metadata:
+        path: null
+        key_column: lesion_id
+    model:
+      architecture: densenet121
+      num_classes: 7
+      class_names: [akiec, bcc, bkl, df, mel, nv, vasc]
+      channels: 3
+      image_size: 224
+      dense_units: 512
+      dropout: 0.5
+      pretrained: true
+      learning_rate: 0.0001
+      max_epochs: 50
+      early_stopping_patience: 5
+      batch_size: 32
+      normalisation:
+        mean: [0.485, 0.456, 0.406]
+        std: [0.229, 0.224, 0.225]
+    augmentation:
+      enabled: false
+      views_per_image: 16
+      max_rotation_degrees: 180.0
+      horizontal_flip: true
+      vertical_flip: true
+      brightness_delta: 0.20
+      contrast_delta: 0.20
+      noise_standard_deviation: 0.02
+      motion_blur_max_kernel: 5
+      occlusion_count: 2
+      occlusion_max_fraction: 0.15
+      occlusion_fill: 0.0
+      output_format: png
+      retain_originals: false
+    attribution:
+      method: integrated_gradients
+      grid_rows: 4
+      grid_columns: 4
+      steps: 64
+      occlusion_fill: 0.0
+    paraphrase:
+      max_rotation_degrees: 15.0
+      max_brightness_delta: 0.10
+      horizontal_flip: true
+    preconditions:
+      recorded_check_policy: as_evaluated
+      quality_metric: laplacian_variance
+      quality_threshold: null
+      history_field: prior_history
+    templates:
+      reason: "Region {group} contributes attribution mass {mass} to the lesion classification."
+      claim: "The {action} lesion classification is supported by the findings in region {group}."
+      evidence: "Region {group} carries attribution mass {mass} in the analysed dermatoscopic image."
+      check: "Recorded clinical check: {check}."
+    action_register:
+      classify_lesion:
+        high_risk: true
+        required_checks:
+          - image_quality_verification
+          - prior_history_review

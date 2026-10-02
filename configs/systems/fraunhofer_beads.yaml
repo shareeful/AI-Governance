@@ -1,0 +1,73 @@
+systems:
+  fraunhofer_beads:
+    kind: object_detection
+    modality: imaging
+    regulatory_basis: "EU AI Act Annex I via the GMP regime"
+    reason_count: 4
+    protected_attributes: [field_of_view_position]
+    protected_attribute_domains:
+      field_of_view_position: []
+    minimum_necessary_personal_data: []
+    dataset:
+      root: null
+      manifest:
+        path: null
+        splits: [train, calibration, test, drift]
+        split_column: split
+        path_column: image_path
+        label_column: batch_verdict
+        identifier_column: frame_id
+    model:
+      weights: null
+      image_size: 1216
+      channels: 1
+      confidence_threshold: 0.25
+      iou_threshold: 0.45
+    decision:
+      accept_action: accept_batch
+      reject_action: reject_batch
+      max_detections_for_accept: 0
+    augmentation:
+      enabled: true
+      views_per_image: 16
+      max_rotation_degrees: 180.0
+      horizontal_flip: true
+      vertical_flip: true
+      brightness_delta: 0.20
+      contrast_delta: 0.20
+      noise_standard_deviation: 0.02
+      motion_blur_max_kernel: 5
+      occlusion_count: 2
+      occlusion_max_fraction: 0.15
+      occlusion_fill: 0.0
+      output_format: png
+      retain_originals: false
+    attribution:
+      grid_rows: 3
+      grid_columns: 3
+      occlusion_fill: 0.0
+    paraphrase:
+      max_rotation_degrees: 10.0
+      max_brightness_delta: 0.10
+      horizontal_flip: true
+    preconditions:
+      recorded_check_policy: as_evaluated
+    templates:
+      reason: "Field-of-view cell {group} carries detection confidence mass {mass}."
+      claim: "The {action} verdict is supported by the detections in cell {group}."
+      evidence: "Cell {group} carries detection confidence mass {mass} in the analysed frame."
+      check: "Recorded GMP batch-release check: {check}."
+    action_register:
+      accept_batch:
+        high_risk: true
+        required_checks:
+          - sterile_capillary_integrity
+          - illumination_calibration
+          - operator_sign_off
+      reject_batch:
+        high_risk: true
+        required_checks:
+          - sterile_capillary_integrity
+          - illumination_calibration
+          - operator_sign_off
+          - deviation_record_opened

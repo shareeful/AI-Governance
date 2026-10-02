@@ -1,0 +1,53 @@
+systems:
+  german_credit:
+    kind: tabular_decision
+    modality: tabular
+    regulatory_basis: "EU AI Act Annex III(5)(b)"
+    reason_count: 5
+    protected_attributes: [personal_status_sex, age_band]
+    protected_attribute_domains:
+      personal_status_sex: []
+      age_band: []
+    minimum_necessary_personal_data: []
+    dataset:
+      path: null
+      separator: " "
+      target_column: credit_risk
+      identifier_column: applicant_id
+      group_column: applicant_id
+      positive_class: good
+      protected_columns: [personal_status_sex, age_band]
+      numeric_columns: []
+      categorical_columns: []
+      feature_groups: {}
+      partition:
+        train: 0.7
+        calibration: 0.15
+        test: 0.15
+    model:
+      n_estimators: 400
+      max_depth: 4
+      learning_rate: 0.05
+      subsample: 0.8
+      colsample_bytree: 0.8
+      reg_lambda: 1.0
+      early_stopping_rounds: 25
+      num_classes: 2
+      class_names: [bad, good]
+      background_size: 100
+    paraphrase:
+      numeric_relative_jitter: 0.01
+    perturbation:
+      mix_weight: 0.5
+    preconditions:
+      recorded_check_policy: as_evaluated
+      evidence_fields: []
+    templates:
+      reason: "Feature group {group} contributes attribution mass {mass} to the lending decision."
+      claim: "The {action} lending decision is supported by feature group {group}."
+      evidence: "Feature group {group} carries attribution mass {mass} for this application."
+      check: "Recorded lending check: {check}."
+    action_register:
+      decide_loan_application:
+        high_risk: true
+        required_checks: []
